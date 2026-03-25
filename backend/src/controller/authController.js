@@ -147,6 +147,7 @@ const login = async (req, res) => {
     });
   }
 };
+
 // Logout controller for clearing the authentication token
 const logout = async (req, res) => {
   try {
