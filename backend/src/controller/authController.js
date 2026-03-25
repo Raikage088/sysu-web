@@ -67,12 +67,14 @@ const signup = async (req, res) => {
     if (newUser) {
       // Generate JWT token and set cookie
       const token = generateToken(newUser, res);
+
       // Respond with success message and user information and check if middle name exists
       const fullName = `${newUser.first_name} ${newUser.middle_name ? newUser.middle_name + " " : ""}${newUser.last_name}`;
 
       return res.status(201).json({
         success: true,
         message: "User created successfully",
+        token: token,
         data: {
           id: newUser.id,
           full_name: fullName,
@@ -85,7 +87,7 @@ const signup = async (req, res) => {
     }
   } catch (error) {
     // Log the error for signup failure and respond with a generic error message
-    console.error("Signup error:", error);
+    console.error("DEBUGGER: Signup error:", error);
 
     return res.status(500).json({
       success: false,
@@ -96,6 +98,74 @@ const signup = async (req, res) => {
 };
 
 // Login controller for user authentication and token generation
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const user = await User.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    const token = generateToken(user, res);
+
+    const fullName = `${user.first_name} ${user.middle_name ? user.middle_name + " " : ""}${user.last_name}`;
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token: token,
+      data: {
+        user_id: user.id,
+        full_name: fullName,
+      },
+    });
+  } catch (error) {
+    console.error("DEBUGGER: Login error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred during login",
+      error_details: error.message,
+    });
+  }
+};
 // Logout controller for clearing the authentication token
-const logout = async (req, res) => {};
+const logout = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      maxAge: 0,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    console.error("DEBUGGER: Logout error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred during logout",
+      error_details: error.message,
+    });
+  }
+};
+
+module.exports = { signup, login, logout };
