@@ -2,12 +2,103 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Sysu Track | Enterprise Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom Focus Ring para sa Enterprise Look */
+      .input-focus:focus {
+        ring: 2px;
+        ring-color: #3b82f6;
+        border-color: transparent;
+      }
+    </style>
   </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+  <body class="bg-[#0f172a] h-screen flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md p-10 rounded-2xl shadow-2xl">
+      <div class="mb-10 text-center">
+        <div class="inline-block p-3 bg-slate-900 rounded-xl mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 w-8 text-blue-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+          SYSU TRACK
+        </h1>
+        <p
+          class="text-slate-500 text-sm mt-2 font-medium uppercase tracking-widest"
+        >
+          Fleet Management Portal
+        </p>
+      </div>
+
+      <form id="loginForm" class="space-y-6">
+        <div class="space-y-2">
+          <label
+            for="username"
+            class="block text-xs font-bold text-slate-700 uppercase tracking-wider"
+            >Username</label
+          >
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none transition-all focus:ring-2 focus:ring-blue-500 focus:bg-white"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label
+              for="password"
+              class="block text-xs font-bold text-slate-700 uppercase tracking-wider"
+              >Password</label
+            >
+          </div>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="off"
+            placeholder="••••••••"
+            required
+            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 outline-none transition-all focus:ring-2 focus:ring-blue-500 focus:bg-white"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          AUTHENTICATE
+        </button>
+      </form>
+
+      <div class="mt-8 text-center text-slate-400 text-xs italic">
+        &copy; 2026 Sysu Track Engineering. Authorized access only.
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/pages/index.js"></script>
   </body>
 </html>

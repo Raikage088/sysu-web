@@ -1,4 +1,5 @@
-const db = require("../config/db.js").promise();
+// 2. Setup the models
+const db = require("../config/db.js");
 
 const User = {
   // Insert new user into database and return user with data with new ID
@@ -15,7 +16,7 @@ const User = {
         newUser.username,
         newUser.password, // Hashed on controller before saving
       ]);
-      return { admin_id: result.insertId, ...user }; // Return the newly created driver's ID and inserted a unique ID via auto-increment in the database
+      return { admin_id: result.insertId, ...newUser }; // Return the newly created driver's ID and inserted a unique ID via auto-increment in the database
     } catch (error) {
       throw new Error("Failed to create user: " + error);
     }

@@ -9,7 +9,7 @@ const signup = async (req, res) => {
     phone_number,
     last_name,
     first_name,
-    middle_name,
+    middle_initial,
     username,
     password,
   } = req.body;
@@ -59,7 +59,7 @@ const signup = async (req, res) => {
       phone_number: phone_number,
       last_name: last_name,
       first_name: first_name,
-      middle_name: middle_name,
+      middle_initial: middle_initial,
       username: username,
       password: hashedPassword,
     });
@@ -69,14 +69,14 @@ const signup = async (req, res) => {
       const token = generateToken(newUser, res);
 
       // Respond with success message and user information and check if middle name exists
-      const fullName = `${newUser.first_name} ${newUser.middle_name ? newUser.middle_name + " " : ""}${newUser.last_name}`;
+      const fullName = `${newUser.first_name} ${newUser.middle_initial ? newUser.middle_initial + " " : ""}${newUser.last_name}`;
 
       return res.status(201).json({
         success: true,
         message: "User created successfully",
         token: token,
         data: {
-          id: newUser.id,
+          id: newUser.admin_id,
           full_name: fullName,
         },
       });
@@ -126,14 +126,14 @@ const login = async (req, res) => {
 
     const token = generateToken(user, res);
 
-    const fullName = `${user.first_name} ${user.middle_name ? user.middle_name + " " : ""}${user.last_name}`;
+    const fullName = `${user.first_name} ${user.middle_initial ? user.middle_initial + " " : ""}${user.last_name}`;
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
       token: token,
       data: {
-        user_id: user.id,
+        user_id: user.admin_id,
         full_name: fullName,
       },
     });
@@ -147,17 +147,16 @@ const login = async (req, res) => {
     });
   }
 };
-
 // Logout controller for clearing the authentication token
 const logout = async (req, res) => {
   try {
-    res.cookie("token", "", {
-      maxAge: 0,
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      path: "/",
     });
-    return res.status(200).json({
-      success: true,
-      message: "Logout successful",
-    });
+    return res.status(200).json({ message: "Logout Successful" });
   } catch (error) {
     console.error("DEBUGGER: Logout error:", error);
 
@@ -168,5 +167,31 @@ const logout = async (req, res) => {
     });
   }
 };
+const checkAuth = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-module.exports = { signup, login, logout };
+    const user = req.user;
+    const fullName = `${user.first_name} ${user.middle_initial ? user.middle_initial + " " : ""}${user.last_name}`;
+
+    return res.status(200).json({
+      success: true,
+      message: "Authentication successful",
+      data: {
+        user_id: user.admin_id,
+        full_name: fullName,
+        phone_number: user.phone_number,
+      },
+    });
+  } catch (error) {
+    console.error("DEBUGGER: CheckAuth error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error during authentication check",
+    });
+  }
+};
+
+module.exports = { signup, login, logout, checkAuth };
