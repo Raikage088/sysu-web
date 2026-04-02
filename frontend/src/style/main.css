@@ -1,0 +1,28 @@
+/* General Solution para sa buong App */
+html,
+body {
+  /* Tinatanggal ang "typing cursor" (caret) sa text */
+  cursor: default;
+
+  /* Pinipigilan ang blue highlight/selection sa text */
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+}
+
+/* Exception: Payagan pa rin ang cursor sa mga kailangang i-type o i-click */
+input,
+textarea,
+button,
+a,
+[contenteditable="true"] {
+  cursor: auto;
+  user-select: text; /* Pwedeng i-highlight ang text sa loob ng inputs */
+}
+
+/* Para sa buttons, mas maganda kung "pointer" (kamay) ang cursor */
+button,
+a {
+  cursor: pointer;
+}
